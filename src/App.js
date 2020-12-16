@@ -1,23 +1,73 @@
-import logo from './logo.svg';
+import { useDispatch, useSelector } from 'react-redux';
 import './App.css';
+import { addCashAction, getCashAction } from './store/cashReducer'
+import { addCustomerAction, removeCustomerAction } from './store/customerReducer'
+
 
 function App() {
+
+  const dispatch = useDispatch()
+  const cash = useSelector(state => state.cash.cash)
+  const customers = useSelector(state => state.customers.customers)
+
+  const addCash = (cash) => {
+    dispatch(addCashAction(cash))
+  }
+  const getCash = (cash) => {
+    dispatch(getCashAction(cash))
+  }
+
+  const addCustomer = (name) => {
+    dispatch(addCustomerAction({
+      name,
+      id: Date.now()
+    }))
+  }
+
+  const removeCustomer = (customer) => {
+    dispatch(removeCustomerAction(customer.id))
+  }
+
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <div className="text">Your balance: {cash}</div>
+      <div className="button">
+
+        <button onClick={() => addCash(Number(prompt()))}>
+          Add money
+        </button>
+        <button onClick={() => getCash(Number(prompt()))}>
+          Get money
+        </button>
+
+        <button onClick={() => addCustomer(prompt())}>
+          Add client
+        </button>
+        <button onClick={() => getCash(prompt())}>
+          Remove client
+        </button>
+
+      </div>
+      {
+        customers.length > 0 ? (
+          <div 
+            >
+            {customers.map(customer =>
+              <div 
+                onClick={() => removeCustomer(customer)}
+                className="text"
+              >
+                {customer.name}
+              </div>
+            )}
+          </div>
+        ) : (
+          <div className="text">
+            Clients are absent!
+          </div>
+        )
+      }
     </div>
   );
 }
